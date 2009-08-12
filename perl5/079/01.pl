@@ -43,12 +43,12 @@ foreach my $entry ( @entries ){
     $passcode =~ s/$second(.*)$first/$first$1$second/;
     $passcode =~ s/$third(.*)$second/$second$1$third/;
 
-    #print "entry: $entry, passcode: $passcode\n";
     
     #remove duplicates:
     my %count;
     $passcode = join('', map { $count{ $_ }++ ? '' : $_ } split //, $passcode );
 
+    print "entry: $entry, passcode: $passcode";
 }
 
 print "Passcode: $passcode\n";

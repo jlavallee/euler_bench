@@ -85,9 +85,10 @@ for @entries -> $entry {
     #remove duplicates:
     #say "\$passcode.comb: ", $passcode.comb;
     #say "\$passcode.comb.uniq: ", $passcode.comb.uniq;
-    say "Passcode: $passcode";
+    #say "Passcode: $passcode";
     $passcode = $passcode.comb.uniq.join('');
-    say "Passcode: $passcode";
+    #say "Passcode: $passcode";
+    say "entry: $entry, passcode: $passcode";
 }
 
 say "Passcode: $passcode";
