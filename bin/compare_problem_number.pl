@@ -19,6 +19,11 @@ my ($euler_problem,$count) = @ARGV;
 $euler_problem ||= '001';
 $count ||= 100;
 
+if( length( $euler_problem ) < 3 ){
+    $euler_problem =~ s/^0//;
+    $euler_problem = sprintf("%03d", $euler_problem);
+}
+
 my @codez;
 for my $language (@languages) {
      push @codez, grep { $_ } glob(catdir($language,$euler_problem,'*'));
