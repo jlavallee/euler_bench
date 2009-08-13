@@ -9,21 +9,17 @@
 #
 #Given that the three characters are always asked for in order, analyse the file so as to determine the secret passcode of unknown length. 
 
-
-
-
 # assumptions - every digit that is in the passcode is in the file
 # no digit is repeated in the sequence
-
 
 
 my $fh = open 'keylog.txt', :r or die "Could not open file keylog.txt: $!";
 
 my @entries = $fh.lines;   # slurp it in
-my $passcode =  @entries[0];
+my $passcode =  @entries.shift;
+$passcode.chomp;
 
 say "passcode: $passcode";
-
 
 for @entries -> $entry {
     chomp $entry;
@@ -40,21 +36,24 @@ for @entries -> $entry {
     #say "second chunk: $second_chunk";
 
     # insert new digits
-    $passcode = $passcode.subst($first, $first_chunk)   unless $passcode ~~ $second;
-    $passcode = $passcode.subst($second, $first_chunk)  unless $passcode ~~ $first;
-    $passcode = $passcode.subst($second, $second_chunk) unless $passcode ~~ $third;
-    $passcode = $passcode.subst($third, $second_chunk)  unless $passcode ~~ $second;
+    eval "regex fu \{ $first \}";
+    $passcode = $passcode.subst( rx/<fu>/, $first_chunk )  unless $passcode ~~ $second;
+    eval "regex gu \{ $second \}";
+    $passcode = $passcode.subst( rx/<gu>/, $first_chunk )  unless $passcode ~~ $first;
+    $passcode = $passcode.subst( rx/<gu>/, $second_chunk ) unless $passcode ~~ $third;
+    eval "regex hu \{ $third \}";
+    $passcode = $passcode.subst( rx/<hu>/, $second_chunk ) unless $passcode ~~ $second;
 
-    #$passcode.subst(/$second(.*)$first/, $first$1$second);
-    #$passcode.subst(/$third(.*)$second/, $second$1$third);
-    #
+    #$passcode = $passcode.comb.uniq.join('');
+
+    my $pre_swap = $passcode;
 
     eval "regex first_re  \{ $first  \}";
     eval "regex second_re \{ $second \}";
     eval "regex third_re  \{ $third  \}";
 
-    $passcode = $passcode.subst( rx/<second_re>(.*)<first_re>/, { $<first_re> ~ $0 ~ $<second_re> } );
-    $passcode = $passcode.subst( rx/<third_re>(.*)<second_re>/, { $<second_re> ~ $0 ~ $<third_re> } );
+    $passcode = $passcode.subst( rx/<second_re><first_re>/, { $first ~  $second } );
+    $passcode = $passcode.subst( rx/<third_re><second_re>/, { $second ~  $third } );
     
     #eval "regex swap_second_and_first \{ $second(.*)$third \}";
     #eval "regex swap_third_and_second \{ $third(.*)$second \}";
@@ -88,7 +87,7 @@ for @entries -> $entry {
     #say "Passcode: $passcode";
     $passcode = $passcode.comb.uniq.join('');
     #say "Passcode: $passcode";
-    say "entry: $entry, passcode: $passcode";
+    say "entry: $entry, pre swap: $pre_swap, passcode: $passcode";
 }
 
 say "Passcode: $passcode";

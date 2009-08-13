@@ -20,8 +20,9 @@ use strict; use warnings;
 open my $fh, 'keylog.txt' or die "no open keylog.txt: $!\n";
 
 my @entries = <$fh>;   # slurp it in
-my $passcode =  $entries[0];
+chomp ( my $passcode = shift @entries );
 
+print "passcode: $passcode\n";
 
 foreach my $entry ( @entries ){
     chomp $entry;
@@ -40,15 +41,18 @@ foreach my $entry ( @entries ){
     $passcode =~ s/$second/$second_chunk/ unless $passcode =~ /$third/ ;
     $passcode =~ s/$third/$second_chunk/  unless $passcode =~ /$second/;
 
+
     $passcode =~ s/$second(.*)$first/$first$1$second/;
     $passcode =~ s/$third(.*)$second/$second$1$third/;
 
+
+    my $pre_swap = $passcode;
     
     #remove duplicates:
     my %count;
     $passcode = join('', map { $count{ $_ }++ ? '' : $_ } split //, $passcode );
 
-    print "entry: $entry, passcode: $passcode";
+    print "entry: $entry, pre swap: $pre_swap, passcode: $passcode\n";
 }
 
 print "Passcode: $passcode\n";
