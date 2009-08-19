@@ -21,7 +21,7 @@ $pents->{ pentagonal($_) } = $_ for(1..5000);
 
 foreach my $p1 ( sort { $a <=> $b } keys %$pents ){
     foreach my $p2 ( sort { $a <=> $b } keys %$pents ){
-        print "checking $p1 v. $p2, abs($p1 - $p2): ",abs($p1 - $p2),"\n";
+        #print "checking $p1 v. $p2, abs($p1 - $p2): ",abs($p1 - $p2),"\n";
         if ( $pents->{ $p1 + $p2 } and $pents->{ abs( $p1 - $p2 ) }){
             #print "\nfound $p1 & $p2!                    (n1 = $pents->{$p1} & n2 = $pents->{$p2})\n"
             #     ."sum:        @{[ $p1 + $p2 ]}        (n = $pents->{$p1 + $p2})\n"
