@@ -12,8 +12,10 @@ my %interp = (
     perl5  => $ENV{PERL5} || 'perl5.10',
     # we should change perl6 to rakudo
     perl6  => $ENV{RAKUDO} || $ENV{PERL6} || catfile( $ENV{HOME},qw{git rakudo perl6}),
+    ruby   => $ENV{RUBY} || 'ruby',
+    erlang => $ENV{ERLANG} || 'escript',
 );
-my @languages = qw/ parrot perl5 perl6 /;
+my @languages = keys %interp;
 
 my ($euler_problem,$count) = @ARGV;
 $euler_problem ||= '001';
@@ -26,7 +28,7 @@ if( length( $euler_problem ) < 3 ){
 
 my @codez;
 for my $language (@languages) {
-     push @codez, grep { $_ } glob(catdir($language,$euler_problem,'*'));
+     push @codez, grep { $_ !~ /~$/ } glob(catdir($language,$euler_problem,'*'));
 }
 #warn Dumper [ @codez ];
 
