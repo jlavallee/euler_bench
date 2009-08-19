@@ -1,4 +1,4 @@
-#!/Users/jeff/Code/rakudo/perl6
+use v6;
 
 #Problem 8
 #
