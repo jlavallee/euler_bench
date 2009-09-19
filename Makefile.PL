@@ -25,6 +25,11 @@ requires
     'Benchmark'             => '0';
 requires
     'JSON'                  => '0';
+requires
+    'Math::Primality'       => '0.04';
+requires
+    'Benchmark::Stopwatch::Pause' => '0';
+
 
 
 auto_install;
