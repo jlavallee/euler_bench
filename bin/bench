@@ -76,11 +76,13 @@ sub report {
                           max( length('interpreter'), map{length} map{$_->{interpreter}} @$runs ),
                           max( length('problem'),     map{length} map{$_->{problem}}     @$runs ),
                           max( length('solution'),    map{length} map{$_->{solution}}    @$runs );
-   printf qq{$root_fmt  min     max     avg     total\n}, 'language', 'interpreter', 'problem', 'solution'; 
+   printf qq{$root_fmt    min     max     avg   total  %% faster than slowest\n}, 'language', 'interpreter', 'problem', 'solution'; 
+
+   my $min_avg = min(map{$_->{avg}} @$runs);
 
    for my $row (@$runs){
-      printf qq{$root_fmt  %02.4f  %02.4f  %02.4f  %02.4f\n},
-             map{ $row->{$_} } qw{language interpreter problem solution min max avg total}
+      printf qq{$root_fmt %02.4f  %02.4f  %02.4f  %05.4f  %21s\n},
+             (map{ $row->{$_} } qw{language interpreter problem solution min max avg total}), sprintf("%02.2f%%", ($row->{avg} - $min_avg) / $min_avg * 100);
    }
 }
 
