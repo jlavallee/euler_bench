@@ -4,7 +4,8 @@ use warnings;
 use 5.010;
 BEGIN {
    # LETO IS MY HERO
-   my ($lib) = __FILE__ =~ m{(.*)bench$};
+   use Cwd qw{abs_path};
+   my ($lib) = abs_path(__FILE__) =~ m{(.*)bench$};
    $lib =~ s{bin/?$}{lib};
    push @INC, $lib
 };
@@ -14,7 +15,7 @@ use Scalar::Util qw{looks_like_number};
 use BenchTools; 
 
 # what are we to be doing?
-my $cmd = (main->can($ARGV[0])) ? shift @ARGV : config->{default}->{cmd};
+my $cmd = (defined $ARGV[0] && main->can($ARGV[0])) ? shift @ARGV : config->{default}->{cmd};
 
 # build out a hash of what was requiested via @ARGV
 my $requested = {};
@@ -22,7 +23,8 @@ sub mk_prob{ sprintf q{%03d}, shift }           # standardize the format of prob
 map{ $_ = mk_prob($_) if looks_like_number($_); # standardize the problem numbers
      $_ = config->{alias}->{$_} || $_;         # alias the input based on the config
      my $where = (problems_hash()->{$_} )      ? 'prob'    # decide what were doing by the type of data given
-               : (config()->{language}->{$_}) ? 'lang'
+               : (config()->{language}->{$_})  ? 'lang'
+               : ($_ =~ m/\d+:\d+/)            ? 'prob'    # !!! HACK FIXME TODO
                :                                 'opt';
      $requested->{$where}->{$_} = 1;            # build a hash so we can uniqui-fy the values
    } @ARGV;
@@ -67,6 +69,7 @@ if (scalar(@$runs)
 #---------------------------------------------------------------------------
 main->$cmd(); #dispatch to the 'right' output
 sub report {
+   die "No Euler Problem for that language" unless @$runs;
    my $root_fmt = sprintf q{ %%-%ds %%-%ds %%-%ds %%-%ds},
                           max( map{length} map{$_->{language}}    @$runs ),
                           max( map{length} map{$_->{interpreter}} @$runs ),
