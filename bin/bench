@@ -70,6 +70,7 @@ if (scalar(@$runs)
 main->$cmd(); #dispatch to the 'right' output
 sub report {
    die "No Euler Problem for that language" unless @$runs;
+
    my $root_fmt = sprintf q{ %%-%ds %%-%ds %%-%ds %%-%ds},
                           max( map{length} map{$_->{language}}    @$runs ),
                           max( map{length} map{$_->{interpreter}} @$runs ),
@@ -77,10 +78,10 @@ sub report {
                           max( map{length} map{$_->{file}}        @$runs );
    printf qq{$root_fmt    min     max     avg    total\n}, '', '', '', ''; 
 
-   map{ my $row = $_;
-        printf qq{$root_fmt  %02.4f  %02.4f  %02.4f  %02.4f\n},
-               map{ $row->{$_} } qw{language interpreter problem file min max avg total};
-      } @$runs;
+   for my $row (@$runs){
+      printf qq{$root_fmt  %02.4f  %02.4f  %02.4f  %02.4f\n},
+             map{ $row->{$_} } qw{language interpreter problem file min max avg total}
+   }
 }
 
 sub rawdata { D $runs };
