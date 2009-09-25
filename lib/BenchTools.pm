@@ -104,9 +104,9 @@ sub build_runs {
                       } grep{ my $v = $_;
                               (scalar(@imp)) ? grep{$v=~m{$prob[/\\]$_}} @imp : 1 ;
                             } sort values %{solutions()->{$problem_set}->{$prob}} #4 now get every path
-                 } @{$requested->{prob}}                   #3 for every problem that was requested
-            } @{ $requested->{interp}->{$lang} }           #2 for every interep for that language in the config
-        } @{$requested->{lang}}                            #1 for every language requested
+                 } @{$requested->{prob}}                                          #3 for every problem that was requested
+            } @{ $requested->{interp}->{$lang} }                                  #2 for every interep for that language in the config
+        } @{$requested->{lang}}                                                   #1 for every language requested
    ];
 }
 
